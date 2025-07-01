@@ -2,6 +2,7 @@ import dao.UserDAO;
 import model.MenuOption;
 import model.UserModel;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -73,8 +74,7 @@ public class Main {
         var birthdayString = scanner.next();
 
         var formatter = DateTimeFormatter.ofPattern("(dd/MM/yyyy)");
-        var birthday = OffsetDateTime.parse(birthdayString, formatter);
-
+        var birthday = LocalDate.parse(birthdayString, formatter);
         return new UserModel(0L, name, email, birthday);
     }
 
@@ -88,8 +88,7 @@ public class Main {
         var birthdayString = scanner.next();
 
         var formatter = DateTimeFormatter.ofPattern("(dd/MM/yyyy)");
-        var birthday = OffsetDateTime.parse(birthdayString, formatter);
-
+        var birthday = LocalDate.parse(birthdayString, formatter);
         return new UserModel(id, name, email, birthday);
     }
 
