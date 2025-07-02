@@ -1,9 +1,12 @@
 import dao.UserDAO;
+import exceptions.EmptyStorageException;
+import exceptions.UserNotFoundException;
+import exceptions.ValidatorException;
 import model.MenuOption;
 import model.UserModel;
+import validator.UserValidator;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
@@ -31,22 +34,50 @@ public class Main {
 
             switch (selectedOption) {
                 case SAVE -> {
-                    var user = dao.save(requestToSave());
-                    System.out.printf("Usuário cadastrado %s\n", user);
+                    try {
+                        var user = dao.save(requestToSave());
+                        System.out.printf("Usuário cadastrado %s\n", user);
+                    } catch (ValidatorException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+
                 }
                 case UPDATE -> {
-                    var user = dao.update(requestToUpdate());
-                    System.out.printf("Usuário atualizado %s\n", user);
+                    try {
+                        var user = dao.update(requestToUpdate());
+                        System.out.printf("Usuário atualizado %s\n", user);
+                    } catch (UserNotFoundException | EmptyStorageException | ValidatorException ex) {
+                        System.out.println(ex.getMessage());
+                    } finally {
+                        System.out.println("===================");
+                    }
+
                 }
                 case DELETE -> {
-                    dao.delete(requestId());
-                    System.out.println("Usuário excluído");
+                    try {
+                        dao.delete(requestId());
+                        System.out.println("Usuário excluído");
+                    } catch (UserNotFoundException | EmptyStorageException ex) {
+                        System.out.println(ex.getMessage());
+                    } finally {
+                        System.out.println("===================");
+                    }
+
                 }
                 case FIND_BY_ID -> {
-                    var id = requestId();
-                    var user = dao.findById(id);
-                    System.out.printf("Usuário com id %s:\n", id);
-                    System.out.println(user);
+
+                    try {
+                        var id = requestId();
+                        var user = dao.findById(id);
+                        System.out.printf("Usuário com id %s:\n", id);
+                        System.out.println(user);
+                    } catch (UserNotFoundException | EmptyStorageException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                    finally {
+                        System.out.println("===================");
+                    }
+
                 }
                 case FIND_ALL -> {
                     var users = dao.findAll();
@@ -65,7 +96,7 @@ public class Main {
 
     }
 
-    private static UserModel requestToSave() {
+    private static UserModel requestToSave() throws ValidatorException {
         System.out.print("Informe o nome do usuário: ");
         var name = scanner.next();
         System.out.print("Informe o email do usuário: ");
@@ -73,12 +104,13 @@ public class Main {
         System.out.print("Informe a data de nascimento do usuário (dd/MM/yyyy): ");
         var birthdayString = scanner.next();
 
-        var formatter = DateTimeFormatter.ofPattern("(dd/MM/yyyy)");
+        var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         var birthday = LocalDate.parse(birthdayString, formatter);
-        return new UserModel(0L, name, email, birthday);
+
+        return validateInputs(0L, name, email, birthday);
     }
 
-    private static UserModel requestToUpdate() {
+    private static UserModel requestToUpdate() throws ValidatorException {
         var id = requestId();
         System.out.print("Informe o nome do usuário: ");
         var name = scanner.next();
@@ -89,12 +121,20 @@ public class Main {
 
         var formatter = DateTimeFormatter.ofPattern("(dd/MM/yyyy)");
         var birthday = LocalDate.parse(birthdayString, formatter);
-        return new UserModel(id, name, email, birthday);
+        return validateInputs(0L, name, email, birthday);
     }
 
     private static long requestId() {
         System.out.print("Informe o identificador do usuário: ");
         return scanner.nextLong();
+    }
+
+    private static UserModel validateInputs(final long id, final String name,
+                                            final String email, final LocalDate birthday)
+                                            throws ValidatorException {
+        var user = new UserModel(0L, name, email, birthday);
+        UserValidator.verifyModel(user);
+        return user;
     }
 
 }

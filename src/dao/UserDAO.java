@@ -1,5 +1,6 @@
 package dao;
 
+import exceptions.EmptyStorageException;
 import exceptions.UserNotFoundException;
 import model.UserModel;
 
@@ -22,6 +23,7 @@ public class UserDAO {
 
     // READ
     public UserModel findById(final long id) {
+        verifyStorage();
         var errorMessage = String.format("Não existe usuário com o id %s cadastrado", id);
 
         return models.stream()
@@ -32,7 +34,17 @@ public class UserDAO {
 
     // READ
     public List<UserModel> findAll() {
-        return models;
+        List<UserModel> result;
+
+        try {
+            verifyStorage();
+            result = models;
+        } catch (EmptyStorageException ex) {
+            ex.printStackTrace();
+            result = new ArrayList<>();
+        }
+
+        return result;
     }
 
     // UPDATE
@@ -48,6 +60,10 @@ public class UserDAO {
     public void delete(final long id) {
         var toDelete = findById(id);
         models.remove(toDelete);
+    }
+
+    private void verifyStorage() {
+        if(models.isEmpty()) throw new EmptyStorageException("O armazenamento está vazio");
     }
 
 }
