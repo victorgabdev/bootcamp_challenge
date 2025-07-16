@@ -1,6 +1,6 @@
-package challenges.polymorphism.model;
+package challenges.polymorphism.challenge1.model;
 
-import challenges.polymorphism.model.enums.TypeLanguage;
+import challenges.polymorphism.challenge1.enums.TypeLanguage;
 
 import java.util.Objects;
 

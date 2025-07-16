@@ -1,4 +1,4 @@
-package challenges.polymorphism.model;
+package challenges.polymorphism.challenge1.model;
 
 public class HalfPriceTicket extends Ticket {
 

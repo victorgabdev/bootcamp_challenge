@@ -1,9 +1,4 @@
-package challenges.polymorphism;
-
-import challenges.polymorphism.model.Movie;
-import challenges.polymorphism.model.enums.TypeLanguage;
-
-import java.util.Scanner;
+package challenges.polymorphism.challenge1;
 
 public class App {
 

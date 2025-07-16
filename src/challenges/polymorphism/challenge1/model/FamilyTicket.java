@@ -1,6 +1,4 @@
-package challenges.polymorphism.model;
-
-import java.util.Objects;
+package challenges.polymorphism.challenge1.model;
 
 public class FamilyTicket extends Ticket {
 

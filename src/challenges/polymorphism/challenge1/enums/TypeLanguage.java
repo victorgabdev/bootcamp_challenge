@@ -1,4 +1,4 @@
-package challenges.polymorphism.model.enums;
+package challenges.polymorphism.challenge1.enums;
 
 public enum TypeLanguage {
 
